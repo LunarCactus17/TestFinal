@@ -42,7 +42,6 @@ class scene2 extends Phaser.Scene {
         this.physics.add.collider(this.bullets, this.asteroids, this.hitAsteroid, null, this);
         this.physics.add.collider(this.ship, this.asteroids, this.shipHit, null, this);
         this.physics.add.collider(this.ship, this.ufos, this.shipHit, null, this);
-        this.physics.add.collider(this.bullets, this.ufos, this.hitUFO, null, this);
     }
 
     update(time){
@@ -115,19 +114,6 @@ class scene2 extends Phaser.Scene {
         this.scoreText.setText('Score: ' + this.score);
     }
 
-    hitUFO(bullet, ufo) {
-        let explosion = this.add.sprite(ufo.x, ufo.y, "explosion");
-        explosion.play("explosion_animation");
-
-        bullet.destroy();
-        ufo.destroy();
-
-        this.createUFO(ufo.scaleX, ufo.speed);
-
-        this.score += 20;
-        this.scoreText.setText('Score: ' + this.score);
-    }
-
     spawnAsteroid() {
         this.createAsteroid(0.2, 3.2);
         this.createAsteroid(0.5, 2.1);
@@ -158,13 +144,13 @@ class scene2 extends Phaser.Scene {
     }
 
     spawnUFOs() {
-        this.createUFO(0.3, 0.5);
-        this.createUFO(0.5, 0.3);
+        this.createUFO(0.8, 1.2);  // Adjusted size and speed to be more visible
+        this.createUFO(1.0, 1.0);
     }
 
     createUFO(scale, speed) {
         const x = Phaser.Math.Between(50, config.width - 50);
-        const y = -Phaser.Math.Between(50, 300);
+        const y = Phaser.Math.Between(-100, -50);
 
         const ufo = this.ufos.create(x, y, "ufo");
         ufo.setScale(scale);
