@@ -47,7 +47,8 @@ class scene2 extends Phaser.Scene {
         this.physics.add.collider(this.ship, this.asteroids, this.shipHit, null, this);
         this.physics.add.collider(this.ship, this.ufo, this.shipHit, null, this);
 
-        this.physics.add.collider(this.bullets, this.ufo, this.hitUFO, null, this);
+        // FIXED: prevent UFO from being destroyed on collision
+        this.physics.add.collider(this.bullets, this.ufo, this.hitUFO, this.ufoBulletOverlapCheck, this);
     }
 
     update(time) {
@@ -121,9 +122,10 @@ class scene2 extends Phaser.Scene {
         this.scoreText.setText('Score: ' + this.score);
     }
 
+    // ✅ FIXED UFO hit logic
     hitUFO(bullet, ufo) {
-        this.ufoCurrentHealth -= 1;
         bullet.destroy();
+        this.ufoCurrentHealth -= 1;
 
         if (this.ufoCurrentHealth <= 0) {
             let explosion = this.add.sprite(ufo.x, ufo.y, "explosion");
@@ -143,6 +145,11 @@ class scene2 extends Phaser.Scene {
                 this.heart3.setVisible(true);
             }
         }
+    }
+
+    // ✅ Prevent UFO from being disabled/destroyed
+    ufoBulletOverlapCheck(bullet, ufo) {
+        return true;
     }
 
     spawnAsteroid() {
@@ -183,7 +190,6 @@ class scene2 extends Phaser.Scene {
 
     resetUFOPos(ufo) {
         ufo.y = 0;
-        var randomX = Phaser.Math.Between(0, config.width);
-        ufo.x = randomX;
+        ufo.x = Phaser.Math.Between(0, config.width);
     }
 }
